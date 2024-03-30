@@ -1,13 +1,15 @@
 package com.ntloc.demo;
 
+import com.ntloc.demo.customer.Customer;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
 
-@RestController
+
 @SpringBootApplication
 public class DemoApplication {
 
@@ -15,8 +17,4 @@ public class DemoApplication {
 		SpringApplication.run(DemoApplication.class, args);
 	}
 
-	@GetMapping
-	public List<String> helloWorld() {
-		return List.of("Hello","world");
-	}
 }
