@@ -21,15 +21,6 @@ public class CustomerController {
         return customerService.getCustomers();
     }
 
-    @GetMapping(path = "/{id}")
-    public Customer getCustomerByID(@PathVariable("id") Long id) {
-        return customerService.getCustomerByID(id);
-    }
-
-    @GetMapping(path = "/get-all")
-    public List<Customer> getAllCustomer() {
-        return customerService.getAllCustomer();
-    }
 
     @PostMapping
     public void createCustomer(@RequestBody CreateCustomerRequest createCustomerRequest) {
@@ -37,16 +28,20 @@ public class CustomerController {
         customerService.createCustomer(createCustomerRequest);
     }
 
+
     @PutMapping(path = "/{id}")
     public void updateCustomer(@PathVariable("id") Long id,
-                               @RequestParam String name,
-                               @RequestParam String email,
-                               @RequestParam String address) {
+                               @RequestParam(required = false) String name,
+                               @RequestParam(required = false) String email,
+                               @RequestParam(required = false) String address) {
+        log.info("Received the update request of id: {} with name: {}, email: {}, address: {}",
+                id, name, email, address);
         customerService.updateCustomer(id, name, email, address);
     }
 
     @DeleteMapping(path = "/{id}")
-    public void deleteCustomer(@PathVariable Long id) {
+    public void deleteCustomer(@PathVariable("id") Long id) {
+        log.info("Received the delete customer with id: {}", id);
         customerService.deleteCustomer(id);
     }
 }

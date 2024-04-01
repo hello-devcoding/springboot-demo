@@ -13,7 +13,6 @@ public class Customer {
     private String name;
     private String email;
     private String address;
-    private Boolean isDelete;
 
     public Customer() {
     }
@@ -23,14 +22,12 @@ public class Customer {
         this.name = name;
         this.email = email;
         this.address = address;
-        this.isDelete = Boolean.FALSE;
     }
 
     public Customer(String name, String email, String address) {
         this.name = name;
         this.email = email;
         this.address = address;
-        this.isDelete = Boolean.FALSE;
     }
 
     public static Customer create(String name, String email, String address) {
@@ -79,12 +76,5 @@ public class Customer {
                 '}';
     }
 
-    public Boolean getIsDelete() {
-        return isDelete;
-    }
-
-    public void setIsDelete(Boolean isDelete) {
-        this.isDelete = isDelete;
-    }
 }
 

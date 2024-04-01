@@ -5,10 +5,9 @@ import org.springframework.stereotype.Service;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 @Service
-public class CustomerService {
+public class    CustomerService {
 
     private final CustomerRepository customerRepository;
 
@@ -17,15 +16,13 @@ public class CustomerService {
     }
 
     public List<Customer> getCustomers() {
-        return customerRepository.findAll().stream()
-                .filter(customer -> !customer.getIsDelete())
-                .collect(Collectors.toList());
+        return customerRepository.findAll();
     }
 
     public void createCustomer(CreateCustomerRequest createCustomerRequest) {
         Optional<Customer> customerByEmail = customerRepository.findByEmail(createCustomerRequest.email());
         if (customerByEmail.isPresent()) {
-            throw new RuntimeException("The email already existing");
+            throw new RuntimeException("The email "+ createCustomerRequest.email() + " unavailable.");
         }
         Customer customer = Customer.create(createCustomerRequest.name(),
                 createCustomerRequest.email(),
@@ -33,39 +30,34 @@ public class CustomerService {
         customerRepository.save(customer);
     }
 
+
     public void updateCustomer(Long id, String name, String email, String address) {
         Customer customer = customerRepository.findById(id).orElseThrow(() ->
-                new RuntimeException(String.format("Customer with id %s was not found", id)));
-        if (!Objects.equals(customer.getName(), name)) {
+                new RuntimeException("Customer with id " + id + " doesn't found"));
+        if (Objects.nonNull(name) && !Objects.equals(customer.getName(), name)) {
+
             customer.setName(name);
         }
-        if (!Objects.equals(customer.getAddress(), address)) {
-            customer.setAddress(address);
-        }
-        if (!Objects.equals(customer.getEmail(), email)) {
+        if (Objects.nonNull(email) && !Objects.equals(customer.getEmail(), email)) {
             Optional<Customer> customerByEmail = customerRepository.findByEmail(email);
             if (customerByEmail.isPresent()) {
-                throw new RuntimeException("The email already existing");
+                throw new RuntimeException("The email \""+ email +"\" unavailable to update");
             }
             customer.setEmail(email);
         }
-        customerRepository.save(customer);
+        if (Objects.nonNull(address) && !Objects.equals(customer.getAddress(), address)) {
 
+            customer.setAddress(address);
+        }
+
+        customerRepository.save(customer);
     }
 
     public void deleteCustomer(Long id) {
-        Customer customer = customerRepository.findById(id).orElseThrow(() ->
-                new RuntimeException(String.format("Customer with id %s was not found to delete", id)));
-        customer.setIsDelete(Boolean.TRUE);
-        customerRepository.save(customer);
-    }
-
-    public List<Customer> getAllCustomer() {
-        return customerRepository.findAll();
-    }
-
-    public Customer getCustomerByID(Long id) {
-        return customerRepository.findById(id).orElseThrow(()->
-                new RuntimeException(String.format("Customer with id %s was not found", id)));
+        boolean isExist = customerRepository.existsById(id);
+        if (!isExist) {
+            throw new RuntimeException(String.format("Customer with id %s doesn't exist.",id));
+        }
+        customerRepository.deleteById(id);
     }
 }
