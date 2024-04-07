@@ -17,13 +17,12 @@ public class GlobalExceptionHandler {
     public ApiErrorResponse handleCustomerEmailUnavailableException(CustomerEmailUnavailableException ex,
                                                                     HttpServletRequest request,
                                                                     HandlerMethod method) {
-        ApiErrorResponse apiErrorResponse = new ApiErrorResponse(
+
+        return new ApiErrorResponse(
                 HttpStatus.CONFLICT,ex.getMessage(),
                 request.getRequestURI(),
                 method.getMethod().getName(),
                 ZonedDateTime.now());
-
-        return apiErrorResponse;
     }
 
     @ResponseStatus(HttpStatus.NOT_FOUND)
@@ -31,13 +30,12 @@ public class GlobalExceptionHandler {
     public ApiErrorResponse handleCustomerNotFoundException(CustomerNotFoundException ex,
                                                                     HttpServletRequest request,
                                                                     HandlerMethod method) {
-        ApiErrorResponse apiErrorResponse = new ApiErrorResponse(
+
+        return new ApiErrorResponse(
                 HttpStatus.NOT_FOUND,ex.getMessage(),
                 request.getRequestURI(),
                 method.getMethod().getName(),
                 ZonedDateTime.now());
-
-        return apiErrorResponse;
     }
 
 
