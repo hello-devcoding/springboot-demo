@@ -19,7 +19,7 @@ public class GlobalExceptionHandler {
                                                                     HandlerMethod method) {
 
         return new ApiErrorResponse(
-                HttpStatus.CONFLICT,ex.getMessage(),
+                HttpStatus.CONFLICT, ex.getMessage(),
                 request.getRequestURI(),
                 method.getMethod().getName(),
                 ZonedDateTime.now());
@@ -28,16 +28,15 @@ public class GlobalExceptionHandler {
     @ResponseStatus(HttpStatus.NOT_FOUND)
     @ExceptionHandler(value = CustomerNotFoundException.class)
     public ApiErrorResponse handleCustomerNotFoundException(CustomerNotFoundException ex,
-                                                                    HttpServletRequest request,
-                                                                    HandlerMethod method) {
+                                                            HttpServletRequest request,
+                                                            HandlerMethod method) {
 
         return new ApiErrorResponse(
-                HttpStatus.NOT_FOUND,ex.getMessage(),
+                HttpStatus.NOT_FOUND, ex.getMessage(),
                 request.getRequestURI(),
                 method.getMethod().getName(),
                 ZonedDateTime.now());
     }
-
 
 
 }
