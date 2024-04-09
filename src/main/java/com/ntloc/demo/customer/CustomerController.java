@@ -21,6 +21,11 @@ public class CustomerController {
         return customerService.getCustomers();
     }
 
+    @GetMapping(path = "/{id}")
+    public Customer getCustomer(@PathVariable("id") Long id) {
+        return customerService.getCustomer(id);
+    }
+
 
     @PostMapping
     public void createCustomer(@RequestBody CreateCustomerRequest createCustomerRequest) {
