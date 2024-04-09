@@ -23,7 +23,7 @@ public class CustomerService {
 
     public Customer getCustomer(Long id) {
         return customerRepository.findById(id).orElseThrow(()->
-                new RuntimeException("Customer with id " + id + " doesn't found"));
+                new CustomerNotFoundException("Customer with id " + id + " doesn't found"));
     }
 
     public void createCustomer(CreateCustomerRequest createCustomerRequest) {
