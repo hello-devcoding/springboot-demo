@@ -19,7 +19,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @Testcontainers
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
-class CustomerControllerIntegrationTest {
+class CustomerIntegrationTest {
 
     @Container
     @ServiceConnection
