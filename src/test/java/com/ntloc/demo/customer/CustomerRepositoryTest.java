@@ -20,13 +20,12 @@ import static org.assertj.core.api.Assertions.assertThat;
 @AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
 class CustomerRepositoryTest {
 
-    @Autowired
-    CustomerRepository underTest;
-
     @Container
     @ServiceConnection
     static PostgreSQLContainer<?> postgreSQLContainer =
             new PostgreSQLContainer<>("postgres:16.2");
+    @Autowired
+    CustomerRepository underTest;
 
     @BeforeEach
     void setUp() {

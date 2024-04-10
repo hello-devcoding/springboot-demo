@@ -22,7 +22,7 @@ public class CustomerService {
     }
 
     public Customer getCustomer(Long id) {
-        return customerRepository.findById(id).orElseThrow(()->
+        return customerRepository.findById(id).orElseThrow(() ->
                 new CustomerNotFoundException("Customer with id " + id + " doesn't found"));
     }
 
@@ -63,7 +63,7 @@ public class CustomerService {
     public void deleteCustomer(Long id) {
         boolean isExist = customerRepository.existsById(id);
         if (!isExist) {
-            throw new CustomerNotFoundException(String.format("Customer with id %s doesn't exist.", id));
+            throw new CustomerNotFoundException("Customer with id " + id + " doesn't exist.");
         }
         customerRepository.deleteById(id);
     }

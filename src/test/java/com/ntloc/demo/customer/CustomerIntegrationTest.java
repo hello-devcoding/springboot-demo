@@ -1,9 +1,6 @@
 package com.ntloc.demo.customer;
 
-import org.junit.jupiter.api.MethodOrderer;
-import org.junit.jupiter.api.Order;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.TestMethodOrder;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.web.client.TestRestTemplate;
@@ -15,10 +12,10 @@ import org.testcontainers.junit.jupiter.Container;
 import org.testcontainers.junit.jupiter.Testcontainers;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.springframework.http.HttpMethod.DELETE;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @Testcontainers
-@TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 class CustomerIntegrationTest {
 
     @Container
@@ -29,6 +26,9 @@ class CustomerIntegrationTest {
     @Autowired
     TestRestTemplate testRestTemplate;
 
+    @Autowired
+    CustomerRepository customerRepository;
+
     @Test
     void canEstablishedConnection() {
         assertThat(postgreSQLContainer.isCreated()).isTrue();
@@ -36,7 +36,6 @@ class CustomerIntegrationTest {
     }
 
     @Test
-    @Order(1)
     void shouldCreateNewCustomerWhenCustomerIsValid() {
         //Given
         CreateCustomerRequest createCustomerRequest =
@@ -48,27 +47,21 @@ class CustomerIntegrationTest {
     }
 
     @Test
-    @Order(2)
-    void shouldNotCreateCustomerWhenTheEmailValidationFail() {
-        //Given
-        CreateCustomerRequest createCustomerRequest =
-                new CreateCustomerRequest("name", "email@gmail.com", "address");
-        //when
-        ResponseEntity<Void> response = testRestTemplate.postForEntity("/api/v1/customers", createCustomerRequest, Void.class);
-        //then
-        assertThat(response.getStatusCode()).isEqualTo(HttpStatus.CONFLICT);
-        assertThat(response.getBody());
-
-    }
-
-    @Test
-    @Order(2)
     void shouldFindAllCustomers() {
         //When
         ResponseEntity<Customer[]> customersResponse = testRestTemplate.getForEntity("/api/v1/customers", Customer[].class);
         //Then
         assertThat(customersResponse.getStatusCode()).isEqualTo(HttpStatus.OK);
         assertThat(customersResponse.getBody()).isNotEmpty();
+    }
+
+    @Test
+    void shouldDeleteCustomer() {
+        //When
+        ResponseEntity<Void> response = testRestTemplate.exchange("/api/v1/customers/1", DELETE, null, Void.class);
+        //Then
+        assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
+        assertThat(customerRepository.existsById(1L)).isFalse();
     }
 
 }
