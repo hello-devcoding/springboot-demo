@@ -1,6 +1,7 @@
 package com.ntloc.demo.customer;
 
 import com.ntloc.demo.exception.CustomerEmailUnavailableException;
+import com.ntloc.demo.exception.CustomerNotFoundException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
@@ -14,9 +15,9 @@ import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
 class CustomerServiceTest {
@@ -80,10 +81,49 @@ class CustomerServiceTest {
     }
 
     @Test
-    @Disabled
-    void updateCustomer() {
+    void shouldThrowNotFoundWhenGivenInvalidIDWhileUpdateCustomer() {
+        //given
+        long id = 5L;
+        String name = "leon";
+        String email = "leon@gmail.com";
+        String address = "US";
+        when(customerRepository.findById(id))
+                .thenReturn(Optional.empty());
+        //when
+        //then
+        assertThatThrownBy(()->
+                underTest.updateCustomer(id,name, email,address))
+                .isInstanceOf(CustomerNotFoundException.class)
+                .hasMessage("Customer with id " + id + " doesn't found");
+
+        verify(customerRepository,never()).save(any());
     }
 
+    @Test
+    void shouldOnlyUpdateCustomerName() {
+        //given
+        long id = 5L;
+        Customer customer = Customer.create(
+                id,
+                "leon",
+                "leon@gmail.com",
+                "US"
+        );
+        String newName = "leon mark";
+        when(customerRepository.findById(id))
+                .thenReturn(Optional.of(customer));
+        //when
+        underTest.updateCustomer(id,newName,null,null);
+        //then
+        verify(customerRepository).save(customerArgumentCaptor.capture());
+        Customer capturedCustomer = customerArgumentCaptor.getValue();
+
+        assertThat(capturedCustomer.getName()).isEqualTo(newName);
+        assertThat(capturedCustomer.getEmail()).isEqualTo(customer.getEmail());
+        assertThat(capturedCustomer.getAddress()).isEqualTo(customer.getAddress());
+
+
+    }
     @Test
     @Disabled
     void deleteCustomer() {
