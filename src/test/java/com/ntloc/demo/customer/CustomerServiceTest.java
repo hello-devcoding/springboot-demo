@@ -75,7 +75,7 @@ class CustomerServiceTest {
         assertThatThrownBy(()->
                 underTest.createCustomer(createCustomerRequest))
                 .isInstanceOf(CustomerEmailUnavailableException.class)
-                .hasMessageContaining("The email " + createCustomerRequest.email() + " unavailable.");
+                .hasMessage("The email " + createCustomerRequest.email() + " unavailable.");
 
     }
 
