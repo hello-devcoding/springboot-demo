@@ -121,9 +121,108 @@ class CustomerServiceTest {
         assertThat(capturedCustomer.getName()).isEqualTo(newName);
         assertThat(capturedCustomer.getEmail()).isEqualTo(customer.getEmail());
         assertThat(capturedCustomer.getAddress()).isEqualTo(customer.getAddress());
-
-
     }
+
+    @Test
+    void shouldThrowEmailUnavailableWhenGivenEmailAlreadyPresentedWhileUpdateCustomer() {
+        //given
+        long id = 5L;
+        Customer customer = Customer.create(
+                id,
+                "leon",
+                "leon@gmail.com",
+                "US"
+        );
+        String newEmail = "leonaldo@gmail.com";
+        when(customerRepository.findById(id))
+                .thenReturn(Optional.of(customer));
+        when(customerRepository.findByEmail(newEmail)).thenReturn(Optional.of(new Customer()));
+        //when
+        //then
+        assertThatThrownBy(()->
+                underTest.updateCustomer(id,null,newEmail, null))
+                .isInstanceOf(CustomerEmailUnavailableException.class)
+                .hasMessage("The email \"" + newEmail + "\" unavailable to update");
+
+        verify(customerRepository, never()).save(any());
+    }
+
+    @Test
+    void shouldUpdateOnlyCustomerEmail() {
+        //given
+        long id = 5L;
+        Customer customer = Customer.create(
+                id,
+                "leon",
+                "leon@gmail.com",
+                "US"
+        );
+        String newEmail = "leonaldo@gmail.com";
+        when(customerRepository.findById(id))
+                .thenReturn(Optional.of(customer));
+        //when
+        underTest.updateCustomer(id,null,newEmail,null);
+        //then
+        verify(customerRepository).save(customerArgumentCaptor.capture());
+        Customer capturedCustomer = customerArgumentCaptor.getValue();
+
+        assertThat(capturedCustomer.getName()).isEqualTo(customer.getName());
+        assertThat(capturedCustomer.getEmail()).isEqualTo(newEmail);
+        assertThat(capturedCustomer.getAddress()).isEqualTo(customer.getAddress());
+    }
+
+    @Test
+    void shouldUpdateOnlyCustomerAddress() {
+        //given
+        long id = 5L;
+        Customer customer = Customer.create(
+                id,
+                "leon",
+                "leon@gmail.com",
+                "US"
+        );
+        String newAddress = "UK";
+        when(customerRepository.findById(id))
+                .thenReturn(Optional.of(customer));
+        //when
+        underTest.updateCustomer(id,null,null,newAddress);
+        //then
+        verify(customerRepository).save(customerArgumentCaptor.capture());
+        Customer capturedCustomer = customerArgumentCaptor.getValue();
+
+        assertThat(capturedCustomer.getName()).isEqualTo(customer.getName());
+        assertThat(capturedCustomer.getEmail()).isEqualTo(customer.getEmail());
+        assertThat(capturedCustomer.getAddress()).isEqualTo(newAddress);
+    }
+
+    @Test
+    void shouldUpdateAllAttributeWhenUpdateCustomer() {
+        //given
+        long id = 5L;
+        Customer customer = Customer.create(
+                id,
+                "leon",
+                "leon@gmail.com",
+                "US"
+        );
+        String newName = "leonaldo";
+        String newEmail = "leonaldo@gmail.com";
+        String newAddress = "UK";
+        when(customerRepository.findById(id))
+                .thenReturn(Optional.of(customer));
+        //when
+        underTest.updateCustomer(id,newName,newEmail,newAddress);
+        //then
+        verify(customerRepository).save(customerArgumentCaptor.capture());
+        Customer capturedCustomer = customerArgumentCaptor.getValue();
+
+        assertThat(capturedCustomer.getName()).isEqualTo(newName);
+        assertThat(capturedCustomer.getEmail()).isEqualTo(newEmail);
+        assertThat(capturedCustomer.getAddress()).isEqualTo(newAddress);
+    }
+
+
+
     @Test
     @Disabled
     void deleteCustomer() {
