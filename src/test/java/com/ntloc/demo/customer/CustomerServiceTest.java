@@ -224,7 +224,33 @@ class CustomerServiceTest {
 
 
     @Test
-    @Disabled
-    void deleteCustomer() {
+    void shouldThrowNotFoundWhenGivenIdDoesNotExistWhileDeleteCustomer() {
+        //given
+        long id = 5L;
+        when(customerRepository.existsById(id))
+                .thenReturn(false);
+        //when
+        //then
+        assertThatThrownBy(()->
+                underTest.deleteCustomer(id))
+                .isInstanceOf(CustomerNotFoundException.class)
+                .hasMessage("Customer with id " + id + " doesn't exist.");
+        verify(customerRepository, never()).deleteById(any());
+
     }
+
+    @Test
+    void shouldDeleteCustomer() {
+        //given
+        long id = 5L;
+        when(customerRepository.existsById(id))
+                .thenReturn(true);
+        //when
+        underTest.deleteCustomer(id);
+        //then
+        verify(customerRepository).deleteById(id);
+
+    }
+
+
 }
