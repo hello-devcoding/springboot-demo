@@ -35,7 +35,7 @@ public class Customer {
     }
 
     public static Customer create(Long id, String name, String email, String address) {
-        return new Customer(id , name, email, address);
+        return new Customer(id, name, email, address);
     }
 
     public Long getId() {

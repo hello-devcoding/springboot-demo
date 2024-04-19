@@ -3,7 +3,6 @@ package com.ntloc.demo.customer;
 import com.ntloc.demo.exception.CustomerEmailUnavailableException;
 import com.ntloc.demo.exception.CustomerNotFoundException;
 import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.ArgumentCaptor;
@@ -73,7 +72,7 @@ class CustomerServiceTest {
         when(customerRepository.findByEmail(anyString())).thenReturn(Optional.of(new Customer()));
         //when
         //then
-        assertThatThrownBy(()->
+        assertThatThrownBy(() ->
                 underTest.createCustomer(createCustomerRequest))
                 .isInstanceOf(CustomerEmailUnavailableException.class)
                 .hasMessage("The email " + createCustomerRequest.email() + " unavailable.");
@@ -91,12 +90,12 @@ class CustomerServiceTest {
                 .thenReturn(Optional.empty());
         //when
         //then
-        assertThatThrownBy(()->
-                underTest.updateCustomer(id,name, email,address))
+        assertThatThrownBy(() ->
+                underTest.updateCustomer(id, name, email, address))
                 .isInstanceOf(CustomerNotFoundException.class)
                 .hasMessage("Customer with id " + id + " doesn't found");
 
-        verify(customerRepository,never()).save(any());
+        verify(customerRepository, never()).save(any());
     }
 
     @Test
@@ -113,7 +112,7 @@ class CustomerServiceTest {
         when(customerRepository.findById(id))
                 .thenReturn(Optional.of(customer));
         //when
-        underTest.updateCustomer(id,newName,null,null);
+        underTest.updateCustomer(id, newName, null, null);
         //then
         verify(customerRepository).save(customerArgumentCaptor.capture());
         Customer capturedCustomer = customerArgumentCaptor.getValue();
@@ -139,8 +138,8 @@ class CustomerServiceTest {
         when(customerRepository.findByEmail(newEmail)).thenReturn(Optional.of(new Customer()));
         //when
         //then
-        assertThatThrownBy(()->
-                underTest.updateCustomer(id,null,newEmail, null))
+        assertThatThrownBy(() ->
+                underTest.updateCustomer(id, null, newEmail, null))
                 .isInstanceOf(CustomerEmailUnavailableException.class)
                 .hasMessage("The email \"" + newEmail + "\" unavailable to update");
 
@@ -161,7 +160,7 @@ class CustomerServiceTest {
         when(customerRepository.findById(id))
                 .thenReturn(Optional.of(customer));
         //when
-        underTest.updateCustomer(id,null,newEmail,null);
+        underTest.updateCustomer(id, null, newEmail, null);
         //then
         verify(customerRepository).save(customerArgumentCaptor.capture());
         Customer capturedCustomer = customerArgumentCaptor.getValue();
@@ -185,7 +184,7 @@ class CustomerServiceTest {
         when(customerRepository.findById(id))
                 .thenReturn(Optional.of(customer));
         //when
-        underTest.updateCustomer(id,null,null,newAddress);
+        underTest.updateCustomer(id, null, null, newAddress);
         //then
         verify(customerRepository).save(customerArgumentCaptor.capture());
         Customer capturedCustomer = customerArgumentCaptor.getValue();
@@ -211,7 +210,7 @@ class CustomerServiceTest {
         when(customerRepository.findById(id))
                 .thenReturn(Optional.of(customer));
         //when
-        underTest.updateCustomer(id,newName,newEmail,newAddress);
+        underTest.updateCustomer(id, newName, newEmail, newAddress);
         //then
         verify(customerRepository).save(customerArgumentCaptor.capture());
         Customer capturedCustomer = customerArgumentCaptor.getValue();
@@ -222,7 +221,6 @@ class CustomerServiceTest {
     }
 
 
-
     @Test
     void shouldThrowNotFoundWhenGivenIdDoesNotExistWhileDeleteCustomer() {
         //given
@@ -231,7 +229,7 @@ class CustomerServiceTest {
                 .thenReturn(false);
         //when
         //then
-        assertThatThrownBy(()->
+        assertThatThrownBy(() ->
                 underTest.deleteCustomer(id))
                 .isInstanceOf(CustomerNotFoundException.class)
                 .hasMessage("Customer with id " + id + " doesn't exist.");

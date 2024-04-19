@@ -21,6 +21,11 @@ public class CustomerService {
         return customerRepository.findAll();
     }
 
+    public Customer getCustomerById(Long id) {
+        return customerRepository.findById(id).orElseThrow(() ->
+                new CustomerNotFoundException("Customer with id " + id + " doesn't found"));
+    }
+
     public void createCustomer(CreateCustomerRequest createCustomerRequest) {
         Optional<Customer> customerByEmail = customerRepository.findByEmail(createCustomerRequest.email());
         if (customerByEmail.isPresent()) {
@@ -62,5 +67,6 @@ public class CustomerService {
         }
         customerRepository.deleteById(id);
     }
+
 
 }
