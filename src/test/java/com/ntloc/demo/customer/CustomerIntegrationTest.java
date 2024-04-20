@@ -42,11 +42,6 @@ class CustomerIntegrationTest {
         assertThat(postgreSQLContainer.isRunning()).isTrue();
     }
 
-    @BeforeEach
-    void setUp() {
-
-    }
-
     @Test
     @Rollback
     void shouldCreateCustomer() {
