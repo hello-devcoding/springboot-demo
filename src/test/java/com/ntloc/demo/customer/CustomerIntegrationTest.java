@@ -108,7 +108,7 @@ class CustomerIntegrationTest extends AbstractTestcontainersTest {
                         null,
                         Void.class)
                 .getStatusCode().is2xxSuccessful();
-        //getCustomerById
+        //getCustomerById after we updated
         ResponseEntity<Customer> customerByIdResponse = testRestTemplate.exchange(
                 API_CUSTOMERS_PATH + "/" + id,
                 GET,
@@ -118,7 +118,7 @@ class CustomerIntegrationTest extends AbstractTestcontainersTest {
         );
         assertThat(customerByIdResponse.getStatusCode())
                 .isEqualTo(HttpStatus.OK);
-
+        //Do the comparison customer updated with new email we want to update
         Customer customerUpdated = Objects.requireNonNull(customerByIdResponse.getBody());
 
         assertThat(customerUpdated.getName()).isEqualTo(request.name());
@@ -168,6 +168,7 @@ class CustomerIntegrationTest extends AbstractTestcontainersTest {
                 Void.class
         ).getStatusCode().is2xxSuccessful();
         //then
+        //getCustomerById after we deleted that customer
         ResponseEntity<Object> customerByIdResponse = testRestTemplate.exchange(
                 API_CUSTOMERS_PATH + "/" + id,
                 GET,
